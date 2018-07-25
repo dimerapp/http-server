@@ -22,6 +22,7 @@ module.exports = function (resolveBaseDir) {
   router.get('/versions.json', require('./src/listVersions'))
   router.get('/versions/:no.json', require('./src/listVersionTree'))
   router.get('/versions/:no/:permalink.json', require('./src/showDoc'))
+  router.get('/search/:no.json', require('./src/search'))
 
   return http.createServer((req, res) => {
     router(req, res, (error) => {

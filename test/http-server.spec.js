@@ -295,4 +295,64 @@ test.group('Server config', (group) => {
     const { body } = await supertest(server).get('/versions/1.0.0/bar.json').expect(301)
     assert.deepEqual(body, { redirect: '/foo' })
   })
+
+  test('search for docs for a given version', async (assert) => {
+    const datastore = new Datastore(basePath)
+    await datastore.load()
+
+    await datastore.saveDoc('1.0.0', 'foo.md', {
+      content: {
+        type: 'root',
+        children: [{
+          type: 'element',
+          tag: 'p',
+          props: {},
+          children: [{ type: 'text', value: 'This is some great content' }]
+        }]
+      },
+      title: 'Foo',
+      permalink: '/foo'
+    })
+
+    await datastore.persist()
+    await datastore.indexVersion('1.0.0')
+
+    const server = httpServer((req, res, next) => {
+      req.basePath = basePath
+      next()
+    })
+
+    const { body } = await supertest(server).get('/search/1.0.0.json?query=great').expect(200)
+    assert.deepEqual(body[0].ref, '/foo')
+  })
+
+  test('search for docs when query has spaces', async (assert) => {
+    const datastore = new Datastore(basePath)
+    await datastore.load()
+
+    await datastore.saveDoc('1.0.0', 'foo.md', {
+      content: {
+        type: 'root',
+        children: [{
+          type: 'element',
+          tag: 'p',
+          props: {},
+          children: [{ type: 'text', value: 'This is some great content' }]
+        }]
+      },
+      title: 'Foo',
+      permalink: '/foo'
+    })
+
+    await datastore.persist()
+    await datastore.indexVersion('1.0.0')
+
+    const server = httpServer((req, res, next) => {
+      req.basePath = basePath
+      next()
+    })
+
+    const { body } = await supertest(server).get('/search/1.0.0.json?query=great content').expect(200)
+    assert.deepEqual(body[0].ref, '/foo')
+  })
 })
