@@ -65,11 +65,7 @@ Returns versions for the project
 
 | Status code |  Response | 
 |--------------|------------|
-| 200 | <p>The response will be an array of versions. <pre><code>[{
-  no: '1.0.0',
-  name: 'Version 1.0.0',
-  default: true
-}] </code></pre></p> |
+| 200 | The response will be an array of versions. |
 
 
 #### /version/:no.json
