@@ -1,0 +1,38 @@
+{
+  "name": "http-server",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "mrm": "mrm --preset=@adonisjs/mrm-preset",
+    "pretest": "npm run lint",
+    "test": "japa",
+    "commit": "git-cz",
+    "test:win": "node ./node_modules/japa-cli/index.js",
+    "lint": "standard"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@adonisjs/mrm-preset": "^1.0.10",
+    "commitizen": "^2.10.1",
+    "cz-conventional-changelog": "^2.1.0",
+    "japa": "^1.0.6",
+    "japa-cli": "^1.0.1",
+    "mrm": "^1.2.1",
+    "pkg-ok": "^2.2.0",
+    "standard": "^11.0.1"
+  },
+  "config": {
+    "commitizen": {
+      "path": "cz-conventional-changelog"
+    }
+  },
+  "nyc": {
+    "exclude": [
+      "test",
+      "japaFile.js"
+    ]
+  }
+}
