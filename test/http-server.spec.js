@@ -159,6 +159,41 @@ test.group('Server config', (group) => {
     ])
   })
 
+  test('return tree of docs for the default version', async (assert) => {
+    const datastore = new Datastore(basePath)
+    await datastore.load()
+
+    await datastore.syncVersions([{ no: '1.0.0', default: false }, { no: '1.0.1', default: true }])
+    await datastore.saveDoc('1.0.1', 'foo.md', {
+      content: {
+        type: 'root',
+        children: []
+      },
+      title: 'Foo',
+      permalink: '/foo'
+    })
+
+    await datastore.persist()
+
+    const server = httpServer((req, res, next) => {
+      req.basePath = basePath
+      next()
+    })
+
+    const { body } = await supertest(server).get('/versions/default.json').expect(200)
+    assert.deepEqual(body, [
+      {
+        category: 'root',
+        docs: [{
+          title: 'Foo',
+          permalink: '/foo',
+          jsonPath: 'foo.json',
+          category: 'root'
+        }]
+      }
+    ])
+  })
+
   test('return 404 when doc not found', async (assert) => {
     const server = httpServer((req, res, next) => {
       req.basePath = basePath
@@ -190,6 +225,40 @@ test.group('Server config', (group) => {
     })
 
     const { body } = await supertest(server).get('/versions/1.0.0/foo.json').expect(200)
+    assert.deepEqual(body, {
+      content: {
+        type: 'root',
+        children: []
+      },
+      title: 'Foo',
+      permalink: '/foo',
+      category: 'root',
+      jsonPath: 'foo.json'
+    })
+  })
+
+  test('return doc for the default version', async (assert) => {
+    const datastore = new Datastore(basePath)
+    await datastore.load()
+
+    await datastore.saveDoc('1.0.0', 'foo.md', {
+      content: {
+        type: 'root',
+        children: []
+      },
+      title: 'Foo',
+      permalink: '/foo'
+    })
+    await datastore.syncVersions([{ no: '1.0.0', default: true }])
+
+    await datastore.persist()
+
+    const server = httpServer((req, res, next) => {
+      req.basePath = basePath
+      next()
+    })
+
+    const { body } = await supertest(server).get('/versions/default/foo.json').expect(200)
     assert.deepEqual(body, {
       content: {
         type: 'root',

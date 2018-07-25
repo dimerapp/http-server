@@ -13,6 +13,8 @@ const handleException = require('./src/handleException')
 
 module.exports = function (resolveBaseDir) {
   const router = Router()
+  router.param('no', require('./src/middleware/normalizeVersionNo'))
+
   router.use(resolveBaseDir)
   router.use(require('./src/middleware/loadStore'))
 
