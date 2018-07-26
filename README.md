@@ -41,7 +41,11 @@ Http server needs a callback, which is used as a middleware and must attach `bas
 The `basePath` is the path where `.json` files for a website project are stored.
 
 ```js
-const { router, createServer } = require('@dimerapp/http-server')
+const httpServer = require('@dimerapp/http-server')
+
+const { router, createServer } = httpServer({
+  cors: {} // https://github.com/expressjs/cors#readme
+})
 
 // This middleware is required and must set the basePath
 router.use((req, res, next) => {

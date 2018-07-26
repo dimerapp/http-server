@@ -11,10 +11,12 @@ const Router = require('router')
 const http = require('http')
 const handleException = require('./src/handleException')
 
-module.exports = function () {
+module.exports = function (options) {
   const router = Router()
+  options = options || {}
 
   const createServer = () => {
+    router.use(require('cors')(options.cors))
     router.use(require('./src/middleware/loadStore'))
     router.param('no', require('./src/middleware/normalizeVersionNo'))
     router.get('/config.json', require('./src/serveConfig'))
