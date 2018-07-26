@@ -71,7 +71,7 @@ Returns versions for the project
 #### /version/:no.json
 Returns the content tree for a given version.
 
-**You can also define the keyword `default` instead of defining the version number.**
+**You can also use the keyword `default` instead of defining the version number.**
 
 | Status code |  Response | 
 |--------------|------------|
@@ -81,13 +81,23 @@ Returns the content tree for a given version.
 #### /version/:no/:permalink.json
 Returns doc content for a given permalink on a given version.
 
-**You can also define the keyword `default` instead of defining the version number.**
+**You can also use the keyword `default` instead of defining the version number.**
 
 | Status code |  Response | 
 |--------------|------------|
 | 200 |  An object containing the doc meta data and actual content in JSON format. |
 | 404 | If doc doesn't exists.
 | 301 | If permalink resolves as a redirect for a given doc. The returned response will have the actual permalink.
+
+
+#### /search/:no.json
+Search for content for a given version.
+
+**You can also use the keyword `default` instead of defining the version number.**
+
+| Status code |  Response | 
+|--------------|------------|
+| 200 |  An array of docs for the matched result ordered by their score |
 
 
 ## Change log
