@@ -16,15 +16,23 @@ const Datastore = require('@dimerapp/datastore')
 
 const basePath = join(__dirname, 'app')
 
+function setBasePath (req, res, next) {
+  req.basePath = basePath
+  next()
+}
+
 test.group('Server config', (group) => {
   group.afterEach(async () => {
     await fs.remove(basePath)
   })
 
   test('return 500 when basePath resolver is missing', async (assert) => {
-    const server = httpServer((req, res, next) => {
+    const { router, createServer } = httpServer()
+    router.use((req, res, next) => {
       next()
     })
+
+    const server = createServer()
 
     const { body } = await supertest(server).get('/config.json').expect(500)
     assert.deepEqual(body, [{ message: 'Make sure to define basePath resolver middleware' }])
@@ -32,10 +40,10 @@ test.group('Server config', (group) => {
   })
 
   test('return empty object when config is missing', async (assert) => {
-    const server = httpServer((req, res, next) => {
-      req.basePath = basePath
-      next()
-    })
+    const { router, createServer } = httpServer()
+    router.use(setBasePath)
+
+    const server = createServer()
 
     const { body } = await supertest(server).get('/config.json').expect(200)
     assert.deepEqual(body, {})
@@ -55,20 +63,20 @@ test.group('Server config', (group) => {
     await datastore.syncConfig(config)
     await datastore.persist()
 
-    const server = httpServer((req, res, next) => {
-      req.basePath = basePath
-      next()
-    })
+    const { router, createServer } = httpServer()
+    router.use(setBasePath)
+
+    const server = createServer()
 
     const { body } = await supertest(server).get('/config.json').expect(200)
     assert.deepEqual(body, config)
   })
 
   test('return empty array when there are no versions', async (assert) => {
-    const server = httpServer((req, res, next) => {
-      req.basePath = basePath
-      next()
-    })
+    const { router, createServer } = httpServer()
+    router.use(setBasePath)
+
+    const server = createServer()
 
     const { body } = await supertest(server).get('/versions.json').expect(200)
     assert.deepEqual(body, [])
@@ -81,10 +89,10 @@ test.group('Server config', (group) => {
     await datastore.syncVersions([{ no: '1.0.0' }])
     await datastore.persist()
 
-    const server = httpServer((req, res, next) => {
-      req.basePath = basePath
-      next()
-    })
+    const { router, createServer } = httpServer()
+    router.use(setBasePath)
+
+    const server = createServer()
 
     const { body } = await supertest(server).get('/versions.json').expect(200)
     assert.deepEqual(body, [{
@@ -98,10 +106,10 @@ test.group('Server config', (group) => {
   })
 
   test('return 404 when version doesn\'t exists', async (assert) => {
-    const server = httpServer((req, res, next) => {
-      req.basePath = basePath
-      next()
-    })
+    const { router, createServer } = httpServer()
+    router.use(setBasePath)
+
+    const server = createServer()
 
     const { body } = await supertest(server).get('/versions/1.0.0.json').expect(404)
     assert.deepEqual(body, [{
@@ -116,10 +124,10 @@ test.group('Server config', (group) => {
     await datastore.syncVersions([{ no: '1.0.0' }])
     await datastore.persist()
 
-    const server = httpServer((req, res, next) => {
-      req.basePath = basePath
-      next()
-    })
+    const { router, createServer } = httpServer()
+    router.use(setBasePath)
+
+    const server = createServer()
 
     const { body } = await supertest(server).get('/versions/1.0.0.json').expect(200)
     assert.deepEqual(body, [])
@@ -140,10 +148,10 @@ test.group('Server config', (group) => {
 
     await datastore.persist()
 
-    const server = httpServer((req, res, next) => {
-      req.basePath = basePath
-      next()
-    })
+    const { router, createServer } = httpServer()
+    router.use(setBasePath)
+
+    const server = createServer()
 
     const { body } = await supertest(server).get('/versions/1.0.0.json').expect(200)
     assert.deepEqual(body, [
@@ -175,10 +183,10 @@ test.group('Server config', (group) => {
 
     await datastore.persist()
 
-    const server = httpServer((req, res, next) => {
-      req.basePath = basePath
-      next()
-    })
+    const { router, createServer } = httpServer()
+    router.use(setBasePath)
+
+    const server = createServer()
 
     const { body } = await supertest(server).get('/versions/default.json').expect(200)
     assert.deepEqual(body, [
@@ -195,10 +203,10 @@ test.group('Server config', (group) => {
   })
 
   test('return 404 when doc not found', async (assert) => {
-    const server = httpServer((req, res, next) => {
-      req.basePath = basePath
-      next()
-    })
+    const { router, createServer } = httpServer()
+    router.use(setBasePath)
+
+    const server = createServer()
 
     const { body } = await supertest(server).get('/versions/1.0.0/hello.json').expect(404)
     assert.deepEqual(body, [{ message: 'doc not found' }])
@@ -219,10 +227,10 @@ test.group('Server config', (group) => {
 
     await datastore.persist()
 
-    const server = httpServer((req, res, next) => {
-      req.basePath = basePath
-      next()
-    })
+    const { router, createServer } = httpServer()
+    router.use(setBasePath)
+
+    const server = createServer()
 
     const { body } = await supertest(server).get('/versions/1.0.0/foo.json').expect(200)
     assert.deepEqual(body, {
@@ -253,10 +261,10 @@ test.group('Server config', (group) => {
 
     await datastore.persist()
 
-    const server = httpServer((req, res, next) => {
-      req.basePath = basePath
-      next()
-    })
+    const { router, createServer } = httpServer()
+    router.use(setBasePath)
+
+    const server = createServer()
 
     const { body } = await supertest(server).get('/versions/default/foo.json').expect(200)
     assert.deepEqual(body, {
@@ -287,10 +295,10 @@ test.group('Server config', (group) => {
 
     await datastore.persist()
 
-    const server = httpServer((req, res, next) => {
-      req.basePath = basePath
-      next()
-    })
+    const { router, createServer } = httpServer()
+    router.use(setBasePath)
+
+    const server = createServer()
 
     const { body } = await supertest(server).get('/versions/1.0.0/bar.json').expect(301)
     assert.deepEqual(body, { redirect: '/foo' })
@@ -322,10 +330,10 @@ test.group('Server config', (group) => {
     await datastore.persist()
     await datastore.indexVersion('1.0.0')
 
-    const server = httpServer((req, res, next) => {
-      req.basePath = basePath
-      next()
-    })
+    const { router, createServer } = httpServer()
+    router.use(setBasePath)
+
+    const server = createServer()
 
     const { body } = await supertest(server).get('/search/1.0.0.json?query=great').expect(200)
     assert.deepEqual(body[0].ref, '/foo')
@@ -357,10 +365,10 @@ test.group('Server config', (group) => {
     await datastore.persist()
     await datastore.indexVersion('1.0.0')
 
-    const server = httpServer((req, res, next) => {
-      req.basePath = basePath
-      next()
-    })
+    const { router, createServer } = httpServer()
+    router.use(setBasePath)
+
+    const server = createServer()
 
     const { body } = await supertest(server).get('/search/1.0.0.json?query=great content').expect(200)
     assert.deepEqual(body[0].ref, '/foo')

@@ -41,14 +41,15 @@ Http server needs a callback, which is used as a middleware and must attach `bas
 The `basePath` is the path where `.json` files for a website project are stored.
 
 ```js
-const httpServer = require('@dimerapp/http-server')
+const { router, createServer } = require('@dimerapp/http-server')
 
-const server = httpServer(function (req, res, next) {
+// This middleware is required and must set the basePath
+router.use((req, res, next) => {
   req.basePath = join(__dirname, 'api')
   next()
 })
 
-server.listen(5000)
+createServer().listen(5000)
 ```
 
 ## API
