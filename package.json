@@ -42,7 +42,7 @@
     ]
   },
   "dependencies": {
-    "@dimerapp/datastore": "^1.0.9",
+    "@dimerapp/datastore": "^1.0.10",
     "node-req": "^2.1.0",
     "node-res": "^4.1.4",
     "ow": "^0.6.0",
