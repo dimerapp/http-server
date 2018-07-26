@@ -305,9 +305,14 @@ test.group('Server config', (group) => {
         type: 'root',
         children: [{
           type: 'element',
-          tag: 'p',
+          tag: 'h1',
           props: {},
-          children: [{ type: 'text', value: 'This is some great content' }]
+          children: [{
+            type: 'element',
+            tag: 'p',
+            props: {},
+            children: [{ type: 'text', value: 'This is some great content' }]
+          }]
         }]
       },
       title: 'Foo',
@@ -335,9 +340,14 @@ test.group('Server config', (group) => {
         type: 'root',
         children: [{
           type: 'element',
-          tag: 'p',
+          tag: 'h1',
           props: {},
-          children: [{ type: 'text', value: 'This is some great content' }]
+          children: [{
+            type: 'element',
+            tag: 'p',
+            props: {},
+            children: [{ type: 'text', value: 'This is some great content' }]
+          }]
         }]
       },
       title: 'Foo',
