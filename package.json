@@ -3,6 +3,10 @@
   "version": "1.0.0",
   "description": "Http server to serve dimer docs over REST API",
   "main": "index.js",
+  "files": [
+    "src",
+    "index.js"
+  ],
   "scripts": {
     "mrm": "mrm --preset=@adonisjs/mrm-preset",
     "pretest": "npm run lint",
@@ -38,7 +42,7 @@
     ]
   },
   "dependencies": {
-    "@dimerapp/datastore": "^1.0.6",
+    "@dimerapp/datastore": "^1.0.9",
     "node-req": "^2.1.0",
     "node-res": "^4.1.4",
     "ow": "^0.6.0",
