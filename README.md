@@ -44,7 +44,8 @@ The `basePath` is the path where `.json` files for a website project are stored.
 const httpServer = require('@dimerapp/http-server')
 
 const { router, createServer } = httpServer({
-  cors: {} // https://github.com/expressjs/cors#readme
+  cors: {}, // https://github.com/expressjs/cors#readme
+  NODE_ENV: 'development'
 })
 
 // This middleware is required and must set the basePath
