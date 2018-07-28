@@ -1,11 +1,12 @@
 {
   "name": "@dimerapp/http-server",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Http server to serve dimer docs over REST API",
   "main": "index.js",
   "files": [
     "src",
-    "index.js"
+    "index.js",
+    "swagger.json"
   ],
   "scripts": {
     "mrm": "mrm --preset=@adonisjs/mrm-preset",

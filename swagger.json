@@ -1,0 +1,125 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "description": "Dimer converts your Markdown files to a JSON API server. You can use this API to create custom layouts for your documentation or use one of the pre-built themes.\n\nThis playground acts as a real time API server for your project started using `dimer serve`. Feel free to test the API's as you write the docs.\n\n- This is a read only API.\n- Make sure to refer the [official documentation](https://guides.dimerapp.org), when help is required",
+    "version": "1.0.0",
+    "title": "Dimer JSON API"
+  },
+  "host": "localhost:5000",
+  "basePath": "/",
+  "schemes": [
+    "http"
+  ],
+  "responses": {
+    "badResponse": {
+      "description": "Unable to fullfill request"
+    },
+    "notFound": {
+      "description": "Resource not found"
+    }
+  },
+  "parameters": {
+    "no": {
+      "in": "path",
+      "name": "no",
+      "required": true,
+      "type": "string",
+      "description": "Define version number or keyword **default**"
+    }
+  },
+  "paths": {
+    "/config.json": {
+      "get": {
+        "summary": "Get config saved inside dimer.json",
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "Returns project config"
+          },
+          "400": {
+            "$ref": "#/responses/badResponse"
+          }
+        }
+      }
+    },
+    "/versions.json": {
+      "get": {
+        "summary": "Get all versions of documentation",
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "Returns an array of versions"
+          }
+        }
+      }
+    },
+    "/versions/{no}.json": {
+      "get": {
+        "summary": "Get categories and docs tree for a given version",
+        "parameters": [
+          {
+            "$ref": "#/parameters/no"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "An array of docs grouped by category"
+          },
+          "404": {
+            "$ref": "#/responses/notFound"
+          }
+        }
+      }
+    },
+    "/versions/{no}/{permalink}.json": {
+      "get": {
+        "summary": "Get doc with its contents",
+        "parameters": [
+          {
+            "$ref": "#/parameters/no"
+          },
+          {
+            "in": "path",
+            "name": "permalink",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Document json with its content"
+          },
+          "404": {
+            "$ref": "#/responses/notFound"
+          }
+        }
+      }
+    },
+    "/search/{no}.json": {
+      "get": {
+        "summary": "Search for a given versions",
+        "parameters": [
+          {
+            "$ref": "#/parameters/no"
+          },
+          {
+            "in": "query",
+            "name": "query",
+            "required": true,
+            "type": "string",
+            "description": "Search term"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "An array of matched results"
+          }
+        }
+      }
+    }
+  }
+}

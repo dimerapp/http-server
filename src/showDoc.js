@@ -17,7 +17,7 @@ module.exports = async function (req, res) {
    */
   if (redirected) {
     nodeRes.status(res, 301)
-    nodeRes.send(req, res, { redirect: redirected })
+    nodeRes.send(req, res, { redirect: redirected }, false)
     return
   }
 
@@ -33,7 +33,7 @@ module.exports = async function (req, res) {
    */
   if (!doc) {
     nodeRes.status(res, 404)
-    nodeRes.send(req, res, [{ message: 'doc not found' }])
+    nodeRes.send(req, res, [{ message: 'doc not found' }], false)
     return
   }
 
@@ -41,5 +41,5 @@ module.exports = async function (req, res) {
    * Otherwise return 200 with the doc contents
    */
   nodeRes.status(res, 200)
-  nodeRes.send(req, res, doc)
+  nodeRes.send(req, res, doc, false)
 }

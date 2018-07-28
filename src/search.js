@@ -15,11 +15,11 @@ module.exports = async function (req, res) {
 
   if (!queryString.query) {
     nodeRes.status(res, 200)
-    nodeRes.send(req, res, [])
+    nodeRes.send(req, res, [], false)
     return
   }
 
   const results = await req.store.search(req.params.no, queryString.query)
   nodeRes.status(res, 200)
-  nodeRes.send(req, res, results)
+  nodeRes.send(req, res, results, false)
 }

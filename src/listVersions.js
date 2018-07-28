@@ -11,5 +11,5 @@ const nodeRes = require('node-res')
 
 module.exports = function (req, res) {
   nodeRes.status(res, 200)
-  nodeRes.send(req, res, req.store.getVersions())
+  nodeRes.send(req, res, req.store.getVersions(), false)
 }

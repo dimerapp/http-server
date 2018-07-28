@@ -15,6 +15,8 @@ module.exports = function (options) {
   const router = Router()
   options = options || {}
 
+  const env = options.NODE_ENV || 'development'
+
   const createServer = () => {
     router.use(require('cors')(options.cors))
     router.use(require('./src/middleware/loadStore'))
@@ -24,6 +26,13 @@ module.exports = function (options) {
     router.get('/versions/:no.json', require('./src/listVersionTree'))
     router.get('/versions/:no/:permalink.json', require('./src/showDoc'))
     router.get('/search/:no.json', require('./src/search'))
+
+    /**
+     * Serve swagger API when in development mode
+     */
+    if (env === 'development') {
+      router.get('/', require('./src/swagger'))
+    }
 
     return http.createServer((req, res) => {
       router(req, res, (error) => {
