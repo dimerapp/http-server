@@ -17,7 +17,7 @@ module.exports = async function (req, res) {
    */
   if (!tree) {
     nodeRes.status(res, 404)
-    nodeRes.send(req, res, [{ message: 'version not found' }])
+    nodeRes.send(req, res, [{ message: 'version not found' }], false)
     return
   }
 
@@ -25,5 +25,5 @@ module.exports = async function (req, res) {
    * Otherwise return the tree
    */
   nodeRes.status(res, 200)
-  nodeRes.send(req, res, tree)
+  nodeRes.send(req, res, tree, false)
 }

@@ -12,7 +12,7 @@ const nodeRes = require('node-res')
 module.exports = function (error, req, res) {
   if (error) {
     nodeRes.status(res, error.status || 500)
-    nodeRes.send(req, res, [{ message: error.message }])
+    nodeRes.send(req, res, [{ message: error.message }], false)
     return
   }
 
@@ -20,5 +20,5 @@ module.exports = function (error, req, res) {
    * If error is empty then it is 404 not found
    */
   nodeRes.status(res, 404)
-  nodeRes.send(req, res, [{ message: 'route not found' }])
+  nodeRes.send(req, res, [{ message: 'route not found' }], false)
 }

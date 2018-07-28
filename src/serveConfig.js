@@ -11,5 +11,5 @@ const nodeRes = require('node-res')
 
 module.exports = async function (req, res) {
   nodeRes.status(res, 200)
-  nodeRes.send(req, res, req.store.getConfig())
+  nodeRes.send(req, res, req.store.getConfig(), false)
 }
