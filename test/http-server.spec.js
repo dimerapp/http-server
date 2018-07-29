@@ -486,4 +486,43 @@ test.group('Server config', (group) => {
       }
     ])
   })
+
+  test('attach version to the doc node', async (assert) => {
+    const datastore = new Datastore(basePath)
+    await datastore.load()
+
+    await datastore.saveDoc('1.0.0', 'foo.md', {
+      content: {
+        type: 'root',
+        children: []
+      },
+      title: 'Foo',
+      permalink: '/foo'
+    })
+
+    await datastore.persist()
+
+    const { router, createServer } = httpServer()
+    router.use(setBasePath)
+
+    const server = createServer()
+
+    const { body } = await supertest(server).get('/versions/1.0.0/foo.json?load_version=true').expect(200)
+    assert.deepEqual(body, {
+      content: {
+        type: 'root',
+        children: []
+      },
+      title: 'Foo',
+      permalink: '/foo',
+      category: 'root',
+      version: {
+        default: false,
+        depreciated: false,
+        draft: false,
+        name: '1.0.0',
+        no: '1.0.0'
+      }
+    })
+  })
 })
