@@ -22,9 +22,32 @@
     "no": {
       "in": "path",
       "name": "no",
+      "default": "default",
       "required": true,
       "type": "string",
       "description": "Define version number or keyword **default**"
+    },
+    "limit": {
+      "in": "query",
+      "name": "limit",
+      "required": false,
+      "default": 0,
+      "type": "number",
+      "description": "Limit the number of docs in the tree"
+    },
+    "loadContent": {
+      "in": "query",
+      "name": "load_content",
+      "required": false,
+      "type": "boolean",
+      "description": "Load doc content for each node inside the tree"
+    },
+    "loadVersion": {
+      "in": "query",
+      "name": "load_version",
+      "required": false,
+      "type": "boolean",
+      "description": "Attach version node to the doc object"
     }
   },
   "paths": {
@@ -63,6 +86,15 @@
         "parameters": [
           {
             "$ref": "#/parameters/no"
+          },
+          {
+            "$ref": "#/parameters/limit"
+          },
+          {
+            "$ref": "#/parameters/loadVersion"
+          },
+          {
+            "$ref": "#/parameters/loadContent"
           }
         ],
         "responses": {
@@ -81,6 +113,9 @@
         "parameters": [
           {
             "$ref": "#/parameters/no"
+          },
+          {
+            "$ref": "#/parameters/loadVersion"
           },
           {
             "in": "path",

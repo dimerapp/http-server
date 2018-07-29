@@ -160,7 +160,6 @@ test.group('Server config', (group) => {
         docs: [{
           title: 'Foo',
           permalink: '/foo',
-          jsonPath: 'foo.json',
           category: 'root'
         }]
       }
@@ -195,7 +194,6 @@ test.group('Server config', (group) => {
         docs: [{
           title: 'Foo',
           permalink: '/foo',
-          jsonPath: 'foo.json',
           category: 'root'
         }]
       }
@@ -240,8 +238,7 @@ test.group('Server config', (group) => {
       },
       title: 'Foo',
       permalink: '/foo',
-      category: 'root',
-      jsonPath: 'foo.json'
+      category: 'root'
     })
   })
 
@@ -274,8 +271,7 @@ test.group('Server config', (group) => {
       },
       title: 'Foo',
       permalink: '/foo',
-      category: 'root',
-      jsonPath: 'foo.json'
+      category: 'root'
     })
   })
 
@@ -372,5 +368,161 @@ test.group('Server config', (group) => {
 
     const { body } = await supertest(server).get('/search/1.0.0.json?query=great content').expect(200)
     assert.deepEqual(body[0].ref, '/foo')
+  })
+
+  test('return tree of docs with its content', async (assert) => {
+    const datastore = new Datastore(basePath)
+    await datastore.load()
+
+    await datastore.saveDoc('1.0.0', 'foo.md', {
+      content: {
+        type: 'root',
+        children: []
+      },
+      title: 'Foo',
+      permalink: '/foo'
+    })
+
+    await datastore.persist()
+
+    const { router, createServer } = httpServer()
+    router.use(setBasePath)
+
+    const server = createServer()
+
+    const { body } = await supertest(server).get('/versions/1.0.0.json?load_content=true').expect(200)
+    assert.deepEqual(body, [
+      {
+        category: 'root',
+        docs: [{
+          title: 'Foo',
+          permalink: '/foo',
+          category: 'root',
+          content: { type: 'root', children: [] }
+        }]
+      }
+    ])
+  })
+
+  test('return tree of docs with its version', async (assert) => {
+    const datastore = new Datastore(basePath)
+    await datastore.load()
+
+    await datastore.saveDoc('1.0.0', 'foo.md', {
+      content: {
+        type: 'root',
+        children: []
+      },
+      title: 'Foo',
+      permalink: '/foo'
+    })
+
+    await datastore.persist()
+
+    const { router, createServer } = httpServer()
+    router.use(setBasePath)
+
+    const server = createServer()
+
+    const { body } = await supertest(server).get('/versions/1.0.0.json?load_version=true&load_content=true').expect(200)
+    assert.deepEqual(body, [
+      {
+        category: 'root',
+        docs: [{
+          title: 'Foo',
+          permalink: '/foo',
+          category: 'root',
+          content: { type: 'root', children: [] },
+          version: {
+            default: false,
+            depreciated: false,
+            draft: false,
+            name: '1.0.0',
+            no: '1.0.0'
+          }
+        }]
+      }
+    ])
+  })
+
+  test('limit docs inside tree', async (assert) => {
+    const datastore = new Datastore(basePath)
+    await datastore.load()
+
+    await datastore.saveDoc('1.0.0', 'foo.md', {
+      content: {
+        type: 'root',
+        children: []
+      },
+      title: 'Foo',
+      permalink: '/foo'
+    })
+
+    await datastore.saveDoc('1.0.0', 'bar.md', {
+      content: {
+        type: 'root',
+        children: []
+      },
+      title: 'Bar',
+      permalink: '/bar'
+    })
+
+    await datastore.persist()
+
+    const { router, createServer } = httpServer()
+    router.use(setBasePath)
+
+    const server = createServer()
+
+    const { body } = await supertest(server).get('/versions/1.0.0.json?limit=1').expect(200)
+    assert.deepEqual(body, [
+      {
+        category: 'root',
+        docs: [{
+          title: 'Bar',
+          permalink: '/bar',
+          category: 'root'
+        }]
+      }
+    ])
+  })
+
+  test('attach version to the doc node', async (assert) => {
+    const datastore = new Datastore(basePath)
+    await datastore.load()
+
+    await datastore.saveDoc('1.0.0', 'foo.md', {
+      content: {
+        type: 'root',
+        children: []
+      },
+      title: 'Foo',
+      permalink: '/foo'
+    })
+
+    await datastore.persist()
+
+    const { router, createServer } = httpServer()
+    router.use(setBasePath)
+
+    const server = createServer()
+
+    const { body } = await supertest(server).get('/versions/1.0.0/foo.json?load_version=true').expect(200)
+    assert.deepEqual(body, {
+      content: {
+        type: 'root',
+        children: []
+      },
+      title: 'Foo',
+      permalink: '/foo',
+      category: 'root',
+      version: {
+        default: false,
+        depreciated: false,
+        draft: false,
+        name: '1.0.0',
+        no: '1.0.0'
+      }
+    })
   })
 })

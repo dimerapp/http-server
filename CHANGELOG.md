@@ -1,3 +1,14 @@
+<a name="1.0.4"></a>
+## [1.0.4](https://github.com/dimerapp/http-server/compare/v1.0.3...v1.0.4) (2018-07-29)
+
+
+### Features
+
+* **showDoc:** allow option to attach version node on doc ([5278662](https://github.com/dimerapp/http-server/commit/5278662))
+* **tree:** accept query params to load content,version and limit docs ([54ce9b6](https://github.com/dimerapp/http-server/commit/54ce9b6))
+
+
+
 <a name="1.0.3"></a>
 ## [1.0.3](https://github.com/dimerapp/http-server/compare/v1.0.2...v1.0.3) (2018-07-28)
 
