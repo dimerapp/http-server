@@ -1,6 +1,6 @@
 {
   "name": "@dimerapp/http-server",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "Http server to serve dimer docs over REST API",
   "main": "index.js",
   "files": [
