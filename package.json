@@ -1,6 +1,6 @@
 {
   "name": "@dimerapp/http-server",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "Http server to serve dimer docs over REST API",
   "main": "index.js",
   "files": [
@@ -43,7 +43,8 @@
     ]
   },
   "dependencies": {
-    "@dimerapp/datastore": "^1.0.14",
+    "@dimerapp/context": "^1.0.1",
+    "@dimerapp/datastore": "^1.0.17",
     "cors": "^2.8.4",
     "node-req": "^2.1.0",
     "node-res": "^4.1.4",
