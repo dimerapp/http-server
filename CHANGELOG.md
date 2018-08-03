@@ -1,3 +1,18 @@
+<a name="1.0.6"></a>
+## [1.0.6](https://github.com/dimerapp/http-server/compare/v1.0.5...v1.0.6) (2018-08-03)
+
+
+### Bug Fixes
+
+* **listTree:** cast booleans and numbers before consuming ([4f914df](https://github.com/dimerapp/http-server/commit/4f914df))
+
+
+### Features
+
+* **search:** accept limit for search results ([6f1b7dd](https://github.com/dimerapp/http-server/commit/6f1b7dd))
+
+
+
 <a name="1.0.5"></a>
 ## [1.0.5](https://github.com/dimerapp/http-server/compare/v1.0.4...v1.0.5) (2018-08-03)
 
