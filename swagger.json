@@ -33,7 +33,7 @@
       "required": false,
       "default": 0,
       "type": "number",
-      "description": "Limit the number of docs in the tree"
+      "description": "Limit the number of records to return"
     },
     "loadContent": {
       "in": "query",
@@ -140,6 +140,9 @@
         "parameters": [
           {
             "$ref": "#/parameters/no"
+          },
+          {
+            "$ref": "#/parameters/limit"
           },
           {
             "in": "query",

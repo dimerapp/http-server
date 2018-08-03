@@ -19,7 +19,7 @@ module.exports = async function (req, res) {
     return
   }
 
-  const results = await req.store.search(req.params.no, queryString.query)
+  const results = await req.store.search(req.params.no, queryString.query, parseInt(queryString.limit))
   nodeRes.status(res, 200)
   nodeRes.send(req, res, results, false)
 }
