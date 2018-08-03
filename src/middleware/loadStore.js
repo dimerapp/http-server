@@ -7,6 +7,7 @@
 * file that was distributed with this source code.
 */
 
+const Context = require('@dimerapp/context')
 const Datastore = require('@dimerapp/datastore')
 
 module.exports = async function (req, res, next) {
@@ -15,7 +16,8 @@ module.exports = async function (req, res, next) {
     return
   }
 
-  const store = new Datastore(req.basePath)
+  const ctx = new Context(req.basePath)
+  const store = new Datastore(ctx)
   await store.load()
 
   req.store = store

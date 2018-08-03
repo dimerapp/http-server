@@ -13,8 +13,10 @@ const fs = require('fs-extra')
 const supertest = require('supertest')
 const httpServer = require('..')
 const Datastore = require('@dimerapp/datastore')
+const Context = require('@dimerapp/context')
 
 const basePath = join(__dirname, 'app')
+const ctx = new Context(basePath)
 
 function setBasePath (req, res, next) {
   req.basePath = basePath
@@ -50,7 +52,7 @@ test.group('Server config', (group) => {
   })
 
   test('return config when it exists', async (assert) => {
-    const datastore = new Datastore(basePath)
+    const datastore = new Datastore(ctx)
     await datastore.load()
 
     const config = {
@@ -83,7 +85,7 @@ test.group('Server config', (group) => {
   })
 
   test('return list of existing versions', async (assert) => {
-    const datastore = new Datastore(basePath)
+    const datastore = new Datastore(ctx)
     await datastore.load()
 
     await datastore.syncVersions([{ no: '1.0.0' }])
@@ -118,7 +120,7 @@ test.group('Server config', (group) => {
   })
 
   test('return empty array when there are no docs in the tree', async (assert) => {
-    const datastore = new Datastore(basePath)
+    const datastore = new Datastore(ctx)
     await datastore.load()
 
     await datastore.syncVersions([{ no: '1.0.0' }])
@@ -134,7 +136,7 @@ test.group('Server config', (group) => {
   })
 
   test('return tree of docs', async (assert) => {
-    const datastore = new Datastore(basePath)
+    const datastore = new Datastore(ctx)
     await datastore.load()
 
     await datastore.saveDoc('1.0.0', 'foo.md', {
@@ -167,7 +169,7 @@ test.group('Server config', (group) => {
   })
 
   test('return tree of docs for the default version', async (assert) => {
-    const datastore = new Datastore(basePath)
+    const datastore = new Datastore(ctx)
     await datastore.load()
 
     await datastore.syncVersions([{ no: '1.0.0', default: false }, { no: '1.0.1', default: true }])
@@ -211,7 +213,7 @@ test.group('Server config', (group) => {
   })
 
   test('return doc content when found', async (assert) => {
-    const datastore = new Datastore(basePath)
+    const datastore = new Datastore(ctx)
     await datastore.load()
 
     await datastore.saveDoc('1.0.0', 'foo.md', {
@@ -243,7 +245,7 @@ test.group('Server config', (group) => {
   })
 
   test('return doc for the default version', async (assert) => {
-    const datastore = new Datastore(basePath)
+    const datastore = new Datastore(ctx)
     await datastore.load()
 
     await datastore.saveDoc('1.0.0', 'foo.md', {
@@ -276,7 +278,7 @@ test.group('Server config', (group) => {
   })
 
   test('redirect request when route is part of redirects', async (assert) => {
-    const datastore = new Datastore(basePath)
+    const datastore = new Datastore(ctx)
     await datastore.load()
 
     await datastore.saveDoc('1.0.0', 'foo.md', {
@@ -301,7 +303,7 @@ test.group('Server config', (group) => {
   })
 
   test('search for docs for a given version', async (assert) => {
-    const datastore = new Datastore(basePath)
+    const datastore = new Datastore(ctx)
     await datastore.load()
 
     await datastore.saveDoc('1.0.0', 'foo.md', {
@@ -336,7 +338,7 @@ test.group('Server config', (group) => {
   })
 
   test('search for docs when query has spaces', async (assert) => {
-    const datastore = new Datastore(basePath)
+    const datastore = new Datastore(ctx)
     await datastore.load()
 
     await datastore.saveDoc('1.0.0', 'foo.md', {
@@ -371,7 +373,7 @@ test.group('Server config', (group) => {
   })
 
   test('return tree of docs with its content', async (assert) => {
-    const datastore = new Datastore(basePath)
+    const datastore = new Datastore(ctx)
     await datastore.load()
 
     await datastore.saveDoc('1.0.0', 'foo.md', {
@@ -405,7 +407,7 @@ test.group('Server config', (group) => {
   })
 
   test('return tree of docs with its version', async (assert) => {
-    const datastore = new Datastore(basePath)
+    const datastore = new Datastore(ctx)
     await datastore.load()
 
     await datastore.saveDoc('1.0.0', 'foo.md', {
@@ -446,7 +448,7 @@ test.group('Server config', (group) => {
   })
 
   test('limit docs inside tree', async (assert) => {
-    const datastore = new Datastore(basePath)
+    const datastore = new Datastore(ctx)
     await datastore.load()
 
     await datastore.saveDoc('1.0.0', 'foo.md', {
@@ -488,7 +490,7 @@ test.group('Server config', (group) => {
   })
 
   test('attach version to the doc node', async (assert) => {
-    const datastore = new Datastore(basePath)
+    const datastore = new Datastore(ctx)
     await datastore.load()
 
     await datastore.saveDoc('1.0.0', 'foo.md', {
