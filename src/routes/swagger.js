@@ -8,7 +8,7 @@
 */
 
 const nodeRes = require('node-res')
-const swagger = require('../swagger.json')
+const swagger = require('../../swagger.json')
 
 module.exports = async function (req, res) {
   const spec = Object.assign(swagger, { host: req.headers.host })
