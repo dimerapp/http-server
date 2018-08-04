@@ -9,7 +9,7 @@
 
 const Router = require('router')
 const http = require('http')
-const handleException = require('./src/handleException')
+const handleException = require('./src/handlers/handleException')
 
 module.exports = function (options) {
   const router = Router()
@@ -21,17 +21,17 @@ module.exports = function (options) {
     router.use(require('cors')(options.cors))
     router.use(require('./src/middleware/loadStore'))
     router.param('no', require('./src/middleware/normalizeVersionNo'))
-    router.get('/config.json', require('./src/serveConfig'))
-    router.get('/versions.json', require('./src/listVersions'))
-    router.get('/versions/:no.json', require('./src/listVersionTree'))
-    router.get('/versions/:no/:permalink.json', require('./src/showDoc'))
-    router.get('/search/:no.json', require('./src/search'))
+    router.get('/config.json', require('./src/routes/serveConfig'))
+    router.get('/versions.json', require('./src/routes/listVersions'))
+    router.get('/versions/:no.json', require('./src/routes/listVersionTree'))
+    router.get('/versions/:no/:permalink.json', require('./src/routes/showDoc'))
+    router.get('/search/:no.json', require('./src/routes/search'))
 
     /**
      * Serve swagger API when in development mode
      */
     if (env === 'development') {
-      router.get('/', require('./src/swagger'))
+      router.get('/', require('./src/routes/swagger'))
     }
 
     return http.createServer((req, res) => {

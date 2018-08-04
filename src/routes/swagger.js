@@ -8,16 +8,17 @@
 */
 
 const nodeRes = require('node-res')
-const swagger = require('../swagger.json')
+const nodeReq = require('node-req')
+const swagger = require('../../swagger.json')
 
 module.exports = async function (req, res) {
-  const spec = Object.assign(swagger, { host: req.headers.host })
+  const spec = Object.assign(swagger, { host: req.headers.host, schemes: [nodeReq(req, true)] })
   nodeRes.send(req, res, `<!DOCTYPE html>
 <html>
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width">
-  <title>JS Bin</title>
+  <title> Dimer API Playground </title>
   <link rel="stylesheet" type="text/css" href="https://unpkg.com/swagger-ui-dist@3.12.1/swagger-ui.css">
 </head>
 <body>
