@@ -18,7 +18,7 @@ module.exports = async function (req, res) {
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width">
-  <title>JS Bin</title>
+  <title> Dimer API Playground </title>
   <link rel="stylesheet" type="text/css" href="https://unpkg.com/swagger-ui-dist@3.12.1/swagger-ui.css">
 </head>
 <body>
