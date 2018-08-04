@@ -16,7 +16,7 @@ module.exports = async function (req, res, next) {
     return
   }
 
-  const ctx = new Context(req.basePath)
+  const ctx = new Context(req.basePath, req.distPath)
   const store = new Datastore(ctx)
   await store.load()
 
