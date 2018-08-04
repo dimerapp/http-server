@@ -51,6 +51,9 @@ const { router, createServer } = httpServer({
 // This middleware is required and must set the basePath
 router.use((req, res, next) => {
   req.basePath = join(__dirname, 'api')
+
+  // optionally
+  req.distPath = 'dist'
   next()
 })
 
