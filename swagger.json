@@ -25,7 +25,7 @@
       "default": "default",
       "required": true,
       "type": "string",
-      "description": "Define version number or keyword **default**"
+      "description": "Define version number or use keyword **default**"
     },
     "limit": {
       "in": "query",
@@ -48,6 +48,14 @@
       "required": false,
       "type": "boolean",
       "description": "Attach version node to the doc object"
+    },
+    "zoneSlug": {
+      "in": "path",
+      "name": "zone",
+      "default": "default",
+      "required": true,
+      "type": "string",
+      "description": "Define zone slug or use keyword **default**"
     }
   },
   "paths": {
@@ -67,23 +75,50 @@
         }
       }
     },
-    "/versions.json": {
+    "/zones.json": {
       "get": {
-        "summary": "Get all versions of documentation",
+        "summary": "Get available zones for the documentation",
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "Returns an array of zones"
+          },
+          "400": {
+            "$ref": "#/responses/badResponse"
+          }
+        }
+      }
+    },
+    "/{zone}/versions.json": {
+      "get": {
+        "summary": "Get all versions for a given zone",
+        "parameters": [
+          {
+            "$ref": "#/parameters/zoneSlug"
+          }
+        ],
         "produces": [
           "application/json"
         ],
         "responses": {
           "200": {
             "description": "Returns an array of versions"
+          },
+          "404": {
+            "$ref": "#/responses/notFound"
           }
         }
       }
     },
-    "/versions/{no}.json": {
+    "/{zone}/versions/{no}.json": {
       "get": {
         "summary": "Get categories and docs tree for a given version",
         "parameters": [
+          {
+            "$ref": "#/parameters/zoneSlug"
+          },
           {
             "$ref": "#/parameters/no"
           },
@@ -107,10 +142,13 @@
         }
       }
     },
-    "/versions/{no}/{permalink}.json": {
+    "/{zone}/versions/{no}/{permalink}.json": {
       "get": {
         "summary": "Get doc with its contents",
         "parameters": [
+          {
+            "$ref": "#/parameters/zoneSlug"
+          },
           {
             "$ref": "#/parameters/no"
           },
@@ -134,10 +172,13 @@
         }
       }
     },
-    "/search/{no}.json": {
+    "/{zone}/versions/{no}/search.json": {
       "get": {
         "summary": "Search for a given versions",
         "parameters": [
+          {
+            "$ref": "#/parameters/zoneSlug"
+          },
           {
             "$ref": "#/parameters/no"
           },

@@ -12,7 +12,7 @@ const nodeReq = require('node-req')
 const swagger = require('../../swagger.json')
 
 module.exports = async function (req, res) {
-  const spec = Object.assign(swagger, { host: req.headers.host, schemes: [nodeReq(req, true)] })
+  const spec = Object.assign(swagger, { host: req.headers.host, schemes: [nodeReq.protocol(req, true)] })
   nodeRes.send(req, res, `<!DOCTYPE html>
 <html>
 <head>

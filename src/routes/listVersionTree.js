@@ -12,8 +12,9 @@ const nodeReq = require('node-req')
 
 module.exports = async function (req, res) {
   const { limit, load_content: loadContent, load_version: loadVersion } = nodeReq.get(req)
+  const { zone, no } = req.params
 
-  const tree = await req.store.getTree(req.params.no, parseInt(limit), loadContent === 'true', loadVersion === 'true')
+  const tree = await req.store.getTree(zone, no, parseInt(limit), loadContent === 'true', loadVersion === 'true')
 
   /**
    * Return 404 when unable to locate tree for the version.

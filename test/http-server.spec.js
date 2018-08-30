@@ -74,21 +74,21 @@ test.group('Server config', (group) => {
     assert.deepEqual(body, config)
   })
 
-  test('return empty array when there are no versions', async (assert) => {
+  test('return 404 when zone doesnt exists', async (assert) => {
     const { router, createServer } = httpServer()
     router.use(setBasePath)
 
     const server = createServer()
 
-    const { body } = await supertest(server).get('/versions.json').expect(200)
-    assert.deepEqual(body, [])
+    const { body } = await supertest(server).get('/guides/versions.json').expect(404)
+    assert.deepEqual(body, [{ message: 'zone not found' }])
   })
 
-  test('return list of existing versions', async (assert) => {
+  test('return empty array when versions doesn\'t exists', async (assert) => {
     const datastore = new Datastore(ctx)
     await datastore.load()
 
-    await datastore.syncVersions([{ no: '1.0.0' }])
+    await datastore.syncZones([{ slug: 'guides', versions: [] }])
     await datastore.persist()
 
     const { router, createServer } = httpServer()
@@ -96,7 +96,23 @@ test.group('Server config', (group) => {
 
     const server = createServer()
 
-    const { body } = await supertest(server).get('/versions.json').expect(200)
+    const { body } = await supertest(server).get('/guides/versions.json').expect(200)
+    assert.deepEqual(body, [])
+  })
+
+  test('return list of existing versions', async (assert) => {
+    const datastore = new Datastore(ctx)
+    await datastore.load()
+
+    await datastore.syncZones([{ slug: 'guides', versions: [{ no: '1.0.0' }] }])
+    await datastore.persist()
+
+    const { router, createServer } = httpServer()
+    router.use(setBasePath)
+
+    const server = createServer()
+
+    const { body } = await supertest(server).get('/guides/versions.json').expect(200)
     assert.deepEqual(body, [{
       no: '1.0.0',
       default: false,
@@ -108,12 +124,18 @@ test.group('Server config', (group) => {
   })
 
   test('return 404 when version doesn\'t exists', async (assert) => {
+    const datastore = new Datastore(ctx)
+    await datastore.load()
+
+    await datastore.syncZones([{ slug: 'guides', versions: [] }])
+    await datastore.persist()
+
     const { router, createServer } = httpServer()
     router.use(setBasePath)
 
     const server = createServer()
 
-    const { body } = await supertest(server).get('/versions/1.0.0.json').expect(404)
+    const { body } = await supertest(server).get('/guides/versions/1.0.0.json').expect(404)
     assert.deepEqual(body, [{
       message: 'version not found'
     }])
@@ -123,7 +145,7 @@ test.group('Server config', (group) => {
     const datastore = new Datastore(ctx)
     await datastore.load()
 
-    await datastore.syncVersions([{ no: '1.0.0' }])
+    await datastore.syncZones([{ slug: 'api', versions: [{ no: '1.0.0' }] }])
     await datastore.persist()
 
     const { router, createServer } = httpServer()
@@ -131,7 +153,7 @@ test.group('Server config', (group) => {
 
     const server = createServer()
 
-    const { body } = await supertest(server).get('/versions/1.0.0.json').expect(200)
+    const { body } = await supertest(server).get('/api/versions/1.0.0.json').expect(200)
     assert.deepEqual(body, [])
   })
 
@@ -139,7 +161,7 @@ test.group('Server config', (group) => {
     const datastore = new Datastore(ctx)
     await datastore.load()
 
-    await datastore.saveDoc('1.0.0', 'foo.md', {
+    await datastore.saveDoc('guides', '1.0.0', 'foo.md', {
       content: {
         type: 'root',
         children: []
@@ -155,7 +177,7 @@ test.group('Server config', (group) => {
 
     const server = createServer()
 
-    const { body } = await supertest(server).get('/versions/1.0.0.json').expect(200)
+    const { body } = await supertest(server).get('/guides/versions/1.0.0.json').expect(200)
     assert.deepEqual(body, [
       {
         category: 'root',
@@ -172,8 +194,8 @@ test.group('Server config', (group) => {
     const datastore = new Datastore(ctx)
     await datastore.load()
 
-    await datastore.syncVersions([{ no: '1.0.0', default: false }, { no: '1.0.1', default: true }])
-    await datastore.saveDoc('1.0.1', 'foo.md', {
+    await datastore.syncVersions('guides', [{ no: '1.0.0', default: false }, { no: '1.0.1', default: true }])
+    await datastore.saveDoc('guides', '1.0.1', 'foo.md', {
       content: {
         type: 'root',
         children: []
@@ -189,7 +211,7 @@ test.group('Server config', (group) => {
 
     const server = createServer()
 
-    const { body } = await supertest(server).get('/versions/default.json').expect(200)
+    const { body } = await supertest(server).get('/guides/versions/default.json').expect(200)
     assert.deepEqual(body, [
       {
         category: 'root',
@@ -208,7 +230,7 @@ test.group('Server config', (group) => {
 
     const server = createServer()
 
-    const { body } = await supertest(server).get('/versions/1.0.0/hello.json').expect(404)
+    const { body } = await supertest(server).get('/guides/versions/1.0.0/hello.json').expect(404)
     assert.deepEqual(body, [{ message: 'doc not found' }])
   })
 
@@ -216,7 +238,7 @@ test.group('Server config', (group) => {
     const datastore = new Datastore(ctx)
     await datastore.load()
 
-    await datastore.saveDoc('1.0.0', 'foo.md', {
+    await datastore.saveDoc('api', '1.0.0', 'foo.md', {
       content: {
         type: 'root',
         children: []
@@ -232,7 +254,7 @@ test.group('Server config', (group) => {
 
     const server = createServer()
 
-    const { body } = await supertest(server).get('/versions/1.0.0/foo.json').expect(200)
+    const { body } = await supertest(server).get('/api/versions/1.0.0/foo.json').expect(200)
     assert.deepEqual(body, {
       content: {
         type: 'root',
@@ -248,7 +270,7 @@ test.group('Server config', (group) => {
     const datastore = new Datastore(ctx)
     await datastore.load()
 
-    await datastore.saveDoc('1.0.0', 'foo.md', {
+    await datastore.saveDoc('api', '1.0.0', 'foo.md', {
       content: {
         type: 'root',
         children: []
@@ -256,7 +278,7 @@ test.group('Server config', (group) => {
       title: 'Foo',
       permalink: '/foo'
     })
-    await datastore.syncVersions([{ no: '1.0.0', default: true }])
+    await datastore.syncVersions('api', [{ no: '1.0.0', default: true }])
 
     await datastore.persist()
 
@@ -265,7 +287,7 @@ test.group('Server config', (group) => {
 
     const server = createServer()
 
-    const { body } = await supertest(server).get('/versions/default/foo.json').expect(200)
+    const { body } = await supertest(server).get('/api/versions/default/foo.json').expect(200)
     assert.deepEqual(body, {
       content: {
         type: 'root',
@@ -281,7 +303,7 @@ test.group('Server config', (group) => {
     const datastore = new Datastore(ctx)
     await datastore.load()
 
-    await datastore.saveDoc('1.0.0', 'foo.md', {
+    await datastore.saveDoc('faq', '1.0.0', 'foo.md', {
       content: {
         type: 'root',
         children: []
@@ -298,7 +320,7 @@ test.group('Server config', (group) => {
 
     const server = createServer()
 
-    const { body } = await supertest(server).get('/versions/1.0.0/bar.json').expect(301)
+    const { body } = await supertest(server).get('/faq/versions/1.0.0/bar.json').expect(301)
     assert.deepEqual(body, { redirect: '/foo' })
   })
 
@@ -306,7 +328,7 @@ test.group('Server config', (group) => {
     const datastore = new Datastore(ctx)
     await datastore.load()
 
-    await datastore.saveDoc('1.0.0', 'foo.md', {
+    await datastore.saveDoc('api', '1.0.0', 'foo.md', {
       content: {
         type: 'root',
         children: [{
@@ -326,14 +348,14 @@ test.group('Server config', (group) => {
     })
 
     await datastore.persist()
-    await datastore.indexVersion('1.0.0')
+    await datastore.indexVersion('api', '1.0.0')
 
     const { router, createServer } = httpServer()
     router.use(setBasePath)
 
     const server = createServer()
 
-    const { body } = await supertest(server).get('/search/1.0.0.json?query=great').expect(200)
+    const { body } = await supertest(server).get('/api/versions/1.0.0/search.json?query=great').expect(200)
     assert.deepEqual(body[0].ref, '/foo')
   })
 
@@ -341,7 +363,7 @@ test.group('Server config', (group) => {
     const datastore = new Datastore(ctx)
     await datastore.load()
 
-    await datastore.saveDoc('1.0.0', 'foo.md', {
+    await datastore.saveDoc('api', '1.0.0', 'foo.md', {
       content: {
         type: 'root',
         children: [{
@@ -361,14 +383,14 @@ test.group('Server config', (group) => {
     })
 
     await datastore.persist()
-    await datastore.indexVersion('1.0.0')
+    await datastore.indexVersion('api', '1.0.0')
 
     const { router, createServer } = httpServer()
     router.use(setBasePath)
 
     const server = createServer()
 
-    const { body } = await supertest(server).get('/search/1.0.0.json?query=great content').expect(200)
+    const { body } = await supertest(server).get('/api/versions/1.0.0/search.json?query=great content').expect(200)
     assert.deepEqual(body[0].ref, '/foo')
   })
 
@@ -376,7 +398,7 @@ test.group('Server config', (group) => {
     const datastore = new Datastore(ctx)
     await datastore.load()
 
-    await datastore.saveDoc('1.0.0', 'foo.md', {
+    await datastore.saveDoc('api', '1.0.0', 'foo.md', {
       content: {
         type: 'root',
         children: []
@@ -392,7 +414,7 @@ test.group('Server config', (group) => {
 
     const server = createServer()
 
-    const { body } = await supertest(server).get('/versions/1.0.0.json?load_content=true').expect(200)
+    const { body } = await supertest(server).get('/api/versions/1.0.0.json?load_content=true').expect(200)
     assert.deepEqual(body, [
       {
         category: 'root',
@@ -410,7 +432,7 @@ test.group('Server config', (group) => {
     const datastore = new Datastore(ctx)
     await datastore.load()
 
-    await datastore.saveDoc('1.0.0', 'foo.md', {
+    await datastore.saveDoc('api', '1.0.0', 'foo.md', {
       content: {
         type: 'root',
         children: []
@@ -426,7 +448,7 @@ test.group('Server config', (group) => {
 
     const server = createServer()
 
-    const { body } = await supertest(server).get('/versions/1.0.0.json?load_version=true&load_content=true').expect(200)
+    const { body } = await supertest(server).get('/api/versions/1.0.0.json?load_version=true&load_content=true').expect(200)
     assert.deepEqual(body, [
       {
         category: 'root',
@@ -451,7 +473,7 @@ test.group('Server config', (group) => {
     const datastore = new Datastore(ctx)
     await datastore.load()
 
-    await datastore.saveDoc('1.0.0', 'foo.md', {
+    await datastore.saveDoc('api', '1.0.0', 'foo.md', {
       content: {
         type: 'root',
         children: []
@@ -460,7 +482,7 @@ test.group('Server config', (group) => {
       permalink: '/foo'
     })
 
-    await datastore.saveDoc('1.0.0', 'bar.md', {
+    await datastore.saveDoc('api', '1.0.0', 'bar.md', {
       content: {
         type: 'root',
         children: []
@@ -476,7 +498,7 @@ test.group('Server config', (group) => {
 
     const server = createServer()
 
-    const { body } = await supertest(server).get('/versions/1.0.0.json?limit=1').expect(200)
+    const { body } = await supertest(server).get('/api/versions/1.0.0.json?limit=1').expect(200)
     assert.deepEqual(body, [
       {
         category: 'root',
@@ -493,7 +515,7 @@ test.group('Server config', (group) => {
     const datastore = new Datastore(ctx)
     await datastore.load()
 
-    await datastore.saveDoc('1.0.0', 'foo.md', {
+    await datastore.saveDoc('api', '1.0.0', 'foo.md', {
       content: {
         type: 'root',
         children: []
@@ -509,7 +531,7 @@ test.group('Server config', (group) => {
 
     const server = createServer()
 
-    const { body } = await supertest(server).get('/versions/1.0.0/foo.json?load_version=true').expect(200)
+    const { body } = await supertest(server).get('/api/versions/1.0.0/foo.json?load_version=true').expect(200)
     assert.deepEqual(body, {
       content: {
         type: 'root',
@@ -526,5 +548,62 @@ test.group('Server config', (group) => {
         no: '1.0.0'
       }
     })
+  })
+
+  test('return empty array when there are no zones', async (assert) => {
+    const { router, createServer } = httpServer()
+    router.use(setBasePath)
+
+    const server = createServer()
+
+    const { body } = await supertest(server).get('/zones.json').expect(200)
+    assert.deepEqual(body, [])
+  })
+
+  test('return list of existing zones', async (assert) => {
+    const datastore = new Datastore(ctx)
+    await datastore.load()
+
+    await datastore.syncZones([{ slug: 'guides', versions: [] }])
+    await datastore.persist()
+
+    const { router, createServer } = httpServer()
+    router.use(setBasePath)
+
+    const server = createServer()
+
+    const { body } = await supertest(server).get('/zones.json').expect(200)
+    assert.deepEqual(body, [{
+      slug: 'guides',
+      name: 'guides',
+      versions: []
+    }])
+  })
+
+  test('return list of existing zones with it\'s versions', async (assert) => {
+    const datastore = new Datastore(ctx)
+    await datastore.load()
+
+    await datastore.syncZones([{ slug: 'guides', versions: [{ no: '1.0.0' }] }])
+    await datastore.persist()
+
+    const { router, createServer } = httpServer()
+    router.use(setBasePath)
+
+    const server = createServer()
+
+    const { body } = await supertest(server).get('/zones.json').expect(200)
+    assert.deepEqual(body, [{
+      slug: 'guides',
+      name: 'guides',
+      versions: [{
+        no: '1.0.0',
+        name: '1.0.0',
+        default: false,
+        depreciated: false,
+        draft: false,
+        heroDoc: null
+      }]
+    }])
   })
 })

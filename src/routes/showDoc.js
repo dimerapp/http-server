@@ -11,13 +11,14 @@ const nodeRes = require('node-res')
 const nodeReq = require('node-req')
 
 module.exports = async function (req, res) {
-  const redirected = req.store.redirectedPermalink(req.params.no, req.params.permalink)
   const { load_version: loadVersion } = nodeReq.get(req)
+  const { permalink, zone, no } = req.params
 
   /**
    * If permalink is resolved as a redirect, then redirect it to that
    * doc
    */
+  const redirected = req.store.redirectedPermalink(zone, no, permalink)
   if (redirected) {
     nodeRes.status(res, 301)
     nodeRes.send(req, res, { redirect: redirected }, false)
@@ -29,7 +30,7 @@ module.exports = async function (req, res) {
    *
    * @type {Object}
    */
-  const doc = await req.store.getDocByPermalink(req.params.no, req.params.permalink, loadVersion)
+  const doc = await req.store.getDocByPermalink(zone, no, permalink, loadVersion)
 
   /**
    * If unable to find doc, then return 404

@@ -10,6 +10,16 @@
 const nodeRes = require('node-res')
 
 module.exports = function (req, res) {
-  nodeRes.status(res, 200)
-  nodeRes.send(req, res, req.store.getVersions(), false)
+  try {
+    const versions = req.store.getVersions(req.params.zone)
+    if (!versions) {
+      nodeRes.status(res, 404)
+      nodeRes.send(req, res, [{ message: 'zone not found' }], false)
+      return
+    }
+
+    nodeRes.send(req, res, versions, false)
+  } catch (error) {
+    console.log(error)
+  }
 }

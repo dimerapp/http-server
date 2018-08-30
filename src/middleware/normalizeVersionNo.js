@@ -9,7 +9,7 @@
 
 module.exports = function (req, res, next, no) {
   if (no === 'default') {
-    const defaultVersion = req.store.getVersions().find((version) => version.default)
+    const defaultVersion = req.store.getVersions(req.params.zone).find((version) => version.default)
     if (defaultVersion) {
       req.params.no = defaultVersion.no
     }

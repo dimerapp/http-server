@@ -21,11 +21,13 @@ module.exports = function (options) {
     router.use(require('cors')(options.cors))
     router.use(require('./src/middleware/loadStore'))
     router.param('no', require('./src/middleware/normalizeVersionNo'))
+
     router.get('/config.json', require('./src/routes/serveConfig'))
-    router.get('/versions.json', require('./src/routes/listVersions'))
-    router.get('/versions/:no.json', require('./src/routes/listVersionTree'))
-    router.get('/versions/:no/:permalink.json', require('./src/routes/showDoc'))
-    router.get('/search/:no.json', require('./src/routes/search'))
+    router.get('/zones.json', require('./src/routes/listZones'))
+    router.get('/:zone/versions.json', require('./src/routes/listVersions'))
+    router.get('/:zone/versions/:no.json', require('./src/routes/listVersionTree'))
+    router.get('/:zone/versions/:no/search.json', require('./src/routes/search'))
+    router.get('/:zone/versions/:no/:permalink.json', require('./src/routes/showDoc'))
 
     /**
      * Serve swagger API when in development mode
