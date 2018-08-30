@@ -1,3 +1,18 @@
+<a name="2.0.0"></a>
+# [2.0.0](https://github.com/dimerapp/http-server/compare/v1.0.8...v2.0.0) (2018-08-30)
+
+
+### Features
+
+* **zones:** add support for zones in the api ([91353b8](https://github.com/dimerapp/http-server/commit/91353b8))
+
+
+### BREAKING CHANGES
+
+* **zones:** All api's now needs the parent zone to return versions and content
+
+
+
 <a name="1.0.8"></a>
 ## [1.0.8](https://github.com/dimerapp/http-server/compare/v1.0.7...v1.0.8) (2018-08-04)
 
