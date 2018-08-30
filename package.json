@@ -20,7 +20,7 @@
   "author": "virk",
   "license": "MIT",
   "devDependencies": {
-    "@adonisjs/mrm-preset": "^1.0.10",
+    "@adonisjs/mrm-preset": "^1.0.11",
     "commitizen": "^2.10.1",
     "cz-conventional-changelog": "^2.1.0",
     "fs-extra": "^7.0.0",
@@ -28,7 +28,7 @@
     "japa-cli": "^1.0.1",
     "mrm": "^1.2.1",
     "pkg-ok": "^2.2.0",
-    "standard": "^11.0.1",
+    "standard": "^12.0.1",
     "supertest": "^3.1.0"
   },
   "config": {
@@ -43,11 +43,11 @@
     ]
   },
   "dependencies": {
-    "@dimerapp/context": "^1.0.1",
-    "@dimerapp/datastore": "^1.0.18",
+    "@dimerapp/context": "^2.0.0",
+    "@dimerapp/datastore": "^2.0.1",
     "cors": "^2.8.4",
-    "node-req": "^2.1.0",
-    "node-res": "^4.1.4",
+    "node-req": "^2.1.1",
+    "node-res": "^5.0.1",
     "ow": "^0.6.0",
     "router": "^1.3.3"
   },
