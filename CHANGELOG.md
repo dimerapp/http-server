@@ -1,3 +1,13 @@
+<a name="2.0.1"></a>
+## [2.0.1](https://github.com/dimerapp/http-server/compare/v2.0.0...v2.0.1) (2018-09-04)
+
+
+### Bug Fixes
+
+* raise error when normalizing version for non-existing zone ([8e982f0](https://github.com/dimerapp/http-server/commit/8e982f0))
+
+
+
 <a name="2.0.0"></a>
 # [2.0.0](https://github.com/dimerapp/http-server/compare/v1.0.8...v2.0.0) (2018-08-30)
 
