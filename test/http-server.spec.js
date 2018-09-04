@@ -224,13 +224,37 @@ test.group('Server config', (group) => {
     ])
   })
 
-  test('return 404 when doc not found', async (assert) => {
+  test('return 404 when zone not found', async (assert) => {
     const { router, createServer } = httpServer()
     router.use(setBasePath)
 
     const server = createServer()
 
     const { body } = await supertest(server).get('/guides/versions/1.0.0/hello.json').expect(404)
+    assert.deepEqual(body, [{ message: 'Zone not found' }])
+  })
+
+  test('return 404 when doc not found', async (assert) => {
+    const datastore = new Datastore(ctx)
+    await datastore.load()
+
+    await datastore.saveDoc('api', '1.0.0', 'foo.md', {
+      content: {
+        type: 'root',
+        children: []
+      },
+      title: 'Foo',
+      permalink: '/foo'
+    })
+
+    await datastore.persist()
+
+    const { router, createServer } = httpServer()
+    router.use(setBasePath)
+
+    const server = createServer()
+
+    const { body } = await supertest(server).get('/api/versions/1.0.0/hello.json').expect(404)
     assert.deepEqual(body, [{ message: 'doc not found' }])
   })
 
