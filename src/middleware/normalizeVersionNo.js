@@ -8,8 +8,15 @@
 */
 
 module.exports = function (req, res, next, no) {
+  const versions = req.store.getVersions(req.params.zone)
+  if (!versions) {
+    const error = new Error('Zone not found')
+    error.status = 404
+    throw error
+  }
+
   if (no === 'default') {
-    const defaultVersion = req.store.getVersions(req.params.zone).find((version) => version.default)
+    const defaultVersion = versions.find((version) => version.default)
     if (defaultVersion) {
       req.params.no = defaultVersion.no
     }
