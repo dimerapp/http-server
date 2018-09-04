@@ -356,7 +356,7 @@ test.group('Server config', (group) => {
     const server = createServer()
 
     const { body } = await supertest(server).get('/api/versions/1.0.0/search.json?query=great').expect(200)
-    assert.deepEqual(body[0].ref, '/foo')
+    assert.deepEqual(body[0].url, '/foo')
   })
 
   test('search for docs when query has spaces', async (assert) => {
@@ -391,7 +391,7 @@ test.group('Server config', (group) => {
     const server = createServer()
 
     const { body } = await supertest(server).get('/api/versions/1.0.0/search.json?query=great content').expect(200)
-    assert.deepEqual(body[0].ref, '/foo')
+    assert.deepEqual(body[0].url, '/foo')
   })
 
   test('return tree of docs with its content', async (assert) => {
