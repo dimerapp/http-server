@@ -44,7 +44,7 @@
   },
   "dependencies": {
     "@dimerapp/context": "^2.0.0",
-    "@dimerapp/datastore": "^3.0.0",
+    "@dimerapp/datastore": "^3.0.1",
     "cors": "^2.8.4",
     "node-req": "^2.1.1",
     "node-res": "^5.0.1",
