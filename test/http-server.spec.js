@@ -630,4 +630,36 @@ test.group('Server config', (group) => {
       }]
     }])
   })
+
+  test('return doc content for nested permalink', async (assert) => {
+    const datastore = new Datastore(ctx)
+    await datastore.load()
+
+    await datastore.saveDoc('api', '1.0.0', 'foo.md', {
+      content: {
+        type: 'root',
+        children: []
+      },
+      title: 'Foo',
+      permalink: '/foo/bar'
+    })
+
+    await datastore.persist()
+
+    const { router, createServer } = httpServer()
+    router.use(setBasePath)
+
+    const server = createServer()
+
+    const { body } = await supertest(server).get('/api/versions/1.0.0/foo/bar.json').expect(200)
+    assert.deepEqual(body, {
+      content: {
+        type: 'root',
+        children: []
+      },
+      title: 'Foo',
+      permalink: '/foo/bar',
+      category: 'root'
+    })
+  })
 })

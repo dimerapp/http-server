@@ -27,7 +27,7 @@ module.exports = function (options) {
     router.get('/:zone/versions.json', require('./src/routes/listVersions'))
     router.get('/:zone/versions/:no.json', require('./src/routes/listVersionTree'))
     router.get('/:zone/versions/:no/search.json', require('./src/routes/search'))
-    router.get('/:zone/versions/:no/:permalink.json', require('./src/routes/showDoc'))
+    router.get('/:zone/versions/:no/:permalink(*).json', require('./src/routes/showDoc'))
 
     /**
      * Serve swagger API when in development mode

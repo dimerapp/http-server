@@ -1,6 +1,6 @@
 {
   "name": "@dimerapp/http-server",
-  "version": "2.0.2",
+  "version": "2.0.3",
   "description": "Http server to serve dimer docs over REST API",
   "main": "index.js",
   "files": [
@@ -11,7 +11,7 @@
   "scripts": {
     "mrm": "mrm --preset=@adonisjs/mrm-preset",
     "pretest": "npm run lint",
-    "test": "japa",
+    "test": "node japaFile.js",
     "commit": "git-cz",
     "test:win": "node ./node_modules/japa-cli/index.js",
     "lint": "standard"
@@ -20,16 +20,17 @@
   "author": "virk",
   "license": "MIT",
   "devDependencies": {
-    "@adonisjs/mrm-preset": "^1.0.11",
-    "commitizen": "^2.10.1",
+    "@adonisjs/mrm-preset": "^1.0.14",
+    "commitizen": "^3.0.4",
     "cz-conventional-changelog": "^2.1.0",
     "fs-extra": "^7.0.0",
-    "japa": "^1.0.6",
+    "japa": "^2.0.6",
     "japa-cli": "^1.0.1",
     "mrm": "^1.2.1",
-    "pkg-ok": "^2.2.0",
+    "pkg-ok": "^2.3.1",
     "standard": "^12.0.1",
-    "supertest": "^3.1.0"
+    "supertest": "^3.3.0",
+    "yorkie": "^2.0.0"
   },
   "config": {
     "commitizen": {
@@ -38,17 +39,16 @@
   },
   "nyc": {
     "exclude": [
-      "test",
-      "japaFile.js"
+      "test"
     ]
   },
   "dependencies": {
     "@dimerapp/context": "^2.0.0",
     "@dimerapp/datastore": "^3.0.1",
-    "cors": "^2.8.4",
+    "cors": "^2.8.5",
     "node-req": "^2.1.1",
     "node-res": "^5.0.1",
-    "ow": "^0.6.0",
+    "ow": "^0.8.0",
     "router": "^1.3.3"
   },
   "directories": {
@@ -61,5 +61,8 @@
   "bugs": {
     "url": "https://github.com/dimerapp/http-server/issues"
   },
-  "homepage": "https://github.com/dimerapp/http-server#readme"
+  "homepage": "https://github.com/dimerapp/http-server#readme",
+  "gitHooks": {
+    "commit-msg": "node ./node_modules/@adonisjs/mrm-preset/validateCommit/conventional/validate.js"
+  }
 }
