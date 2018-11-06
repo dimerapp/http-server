@@ -11,3 +11,4 @@ yarn.lock
 build
 dist
 package-lock.json
+shrinkwrap.yaml
